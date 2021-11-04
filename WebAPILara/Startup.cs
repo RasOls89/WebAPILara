@@ -29,7 +29,7 @@ namespace WebAPILara
 
             app.UseRouting();
 
-           app.UseMvc();
+          app.UseMvc();
 
             app.UseEndpoints(endpoints =>
             {
