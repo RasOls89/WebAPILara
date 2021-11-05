@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -12,6 +14,8 @@ namespace WebAPILara.Controllers
     [ApiController]
     public class ValuController : ControllerBase
     {
+        private readonly ModelStateDictionary Invalid;
+
         // GET: api/<ValuController>
         [HttpGet]
         public IEnumerable<string> Get()
@@ -21,15 +25,29 @@ namespace WebAPILara.Controllers
 
         // GET api/<ValuController>/5
         [HttpGet("{id:int}")] ///The ? makes it optional. :int makes it so that the value have to be an int
-        public string Get(int id)
+        public IActionResult Get(int id, string query)
         {
-            return $"value {id}";
+            /*
+             * if no return type void 
+            return $"value {id}, query={ query}";
+            */
+
+            ///if IActionResult
+
+            return Ok(new Valu { id = id, text = "value" + id });
+
         }
 
         // POST api/<ValuController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public IActionResult Post([FromBody] Valu value)
         {
+            if (ModelState != Invalid) ///Kollar modelstate, validerar data
+            {
+                return BadRequest(ModelState);
+            }
+
+            return CreatedAtAction("Get", new { id = value.id }, value);
         }
 
         // PUT api/<ValuController>/5
@@ -42,6 +60,17 @@ namespace WebAPILara.Controllers
         [HttpDelete("{id}")]
         public void Delete(int id)
         {
+        }
+
+        /// <summary>
+        /// Lite klass för att skapa något att leka med
+        /// </summary>
+        public class Valu
+        {
+            public int id { get; set; }
+            
+            [MinLength(3)] ///Validation
+            public string text { get; set; }
         }
     }
 }
