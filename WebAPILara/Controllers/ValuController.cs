@@ -20,7 +20,7 @@ namespace WebAPILara.Controllers
         }
 
         // GET api/<ValuController>/5
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")] ///The ? makes it optional. :int makes it so that the value have to be an int
         public string Get(int id)
         {
             return $"value {id}";
